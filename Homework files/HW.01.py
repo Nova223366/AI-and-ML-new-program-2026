@@ -21,6 +21,6 @@ print("want to contienue the conversation (yes or no)")
 z = input("").lower()
 
 if z == "yes":
-    print("Bro your device get to die bye")
+    print("Bro your device getting to die bye")
 else:
     print(f"it was nice chatting with you {name}. Goodbye!")
