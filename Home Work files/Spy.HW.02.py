@@ -26,7 +26,7 @@ def show_stats():
 print(f"{Fore.CYAN}Welcome to Sentiment Spy!{Style.RESET_ALL}")
 user_name = input(f"{Fore.MAGENTA}Please enter your name: {Style.RESET_ALL}").strip() or "Mystery Agent"
 
-print(f"\nHello, Agent {user_name}. Type 'stats' to see counts, or 'exit' to quit.")
+print(f"\nHello, Agent {user_name}. Type 'Start' to see counts, or 'exit' to quit.")
 
 while True:
     user_input = input(f"{Fore.GREEN}>> {Style.RESET_ALL}").strip()
