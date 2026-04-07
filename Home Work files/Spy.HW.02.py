@@ -11,6 +11,16 @@ colorama.init()
 conversation_history = []
 stats = {"Positive": 0, "Neutral": 0, "Negative": 0}
 
+def loading_animation(text="Analyzing"):
+    for _ in range(2):
+        for frame in itertools.cycle([".", "..", "..."]):
+            sys.stdout.write(f"\r{Fore.BLUE}{text}{frame}{Style.RESET_ALL}")
+            sys.stdout.flush()
+            time.sleep(0.4)
+            if frame == "...":
+                break
+    sys.stdout.write("\r" + " " * 30 + "\r")
+
 def get_sentiment_details(text):
     polarity = TextBlob(text).sentiment.polarity
     
@@ -53,6 +63,8 @@ while True:
             stats[key] = 0
         print(f"{Fore.CYAN}History and stats cleared.{Style.RESET_ALL}")
         continue
+
+    loading_animation()
 
     polarity, s_type, color, emoji = get_sentiment_details(user_input)
     
