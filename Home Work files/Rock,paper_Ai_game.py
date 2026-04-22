@@ -1,147 +1,66 @@
+import tkinter as tk
 import random
-from colorama import init, Fore, Style
+from colorama import init
 
 init(autoreset=True)
 
-def display_board(board):
-    print()
+window = tk.Tk()
+window.title("Rock Paper Scissors")
+window.geometry("400x450")
+window.config(bg="#f0f0f0")
 
-    def colored(cell):
-        if cell == 'X':
-            return Fore.RED + cell + Style.RESET_ALL
-        elif cell == 'O':
-            return Fore.BLUE + cell + Style.RESET_ALL
-        else:
-            return Fore.YELLOW + cell + Style.RESET_ALL
+choices = ["Rock", "Paper", "Scissors"]
 
-    print(' ' + colored(board[0]) + ' | ' + colored(board[1]) + ' | ' + colored(board[2]))
-    print(Fore.CYAN + '---+---+---' + Style.RESET_ALL)
-    print(' ' + colored(board[3]) + ' | ' + colored(board[4]) + ' | ' + colored(board[5]))
-    print(Fore.CYAN + '---+---+---' + Style.RESET_ALL)
-    print(' ' + colored(board[6]) + ' | ' + colored(board[7]) + ' | ' + colored(board[8]))
-    print()
+player_score = 0
+computer_score = 0
 
+def play(user_choice):
+    global player_score, computer_score
 
-def player_choice():
-    symbol = ''
-    while symbol not in ['X', 'O']:
-        symbol = input(Fore.GREEN + "Do you want to be X or O? " + Style.RESET_ALL).upper()
+    computer_choice = random.choice(choices)
 
-    return (symbol, 'O' if symbol == 'X' else 'X')
+    if user_choice == computer_choice:
+        result = "It's a Tie!"
+    elif (user_choice == "Rock" and computer_choice == "Scissors") or \
+         (user_choice == "Paper" and computer_choice == "Rock") or \
+         (user_choice == "Scissors" and computer_choice == "Paper"):
+        result = "You Win!"
+        player_score += 1
+    else:
+        result = "Computer Wins!"
+        computer_score += 1
 
+    result_label.config(
+        text=f"You: {user_choice}\nComputer: {computer_choice}\n\n{result}"
+    )
 
-def player_move(board, symbol):
-    while True:
-        try:
-            move = int(input(Fore.GREEN + "Enter your move (1-9): " + Style.RESET_ALL))
-            if move in range(1, 10) and board[move - 1].isdigit():
-                board[move - 1] = symbol
-                break
-            else:
-                print(Fore.RED + "Invalid move. Try again." + Style.RESET_ALL)
-        except ValueError:
-            print(Fore.RED + "Please enter a number between 1 and 9." + Style.RESET_ALL)
+    score_label.config(
+        text=f"Score\nYou: {player_score}  Computer: {computer_score}"
+    )
 
+title = tk.Label(window, text="Rock Paper Scissors", font=("Arial", 16, "bold"), bg="#f0f0f0")
+title.pack(pady=20)
 
-def ai_move(board, ai_symbol, player_symbol):
-    for i in range(9):
-        if board[i].isdigit():
-            copy = board.copy()
-            copy[i] = ai_symbol
-            if check_win(copy, ai_symbol):
-                board[i] = ai_symbol
-                return
+frame = tk.Frame(window, bg="#f0f0f0")
+frame.pack()
 
-    for i in range(9):
-        if board[i].isdigit():
-            copy = board.copy()
-            copy[i] = player_symbol
-            if check_win(copy, player_symbol):
-                board[i] = ai_symbol
-                return
+tk.Button(frame, text="Rock", width=12, command=lambda: play("Rock")).grid(row=0, column=0, padx=5, pady=5)
+tk.Button(frame, text="Paper", width=12, command=lambda: play("Paper")).grid(row=0, column=1, padx=5, pady=5)
+tk.Button(frame, text="Scissors", width=12, command=lambda: play("Scissors")).grid(row=0, column=2, padx=5, pady=5)
 
-    if board[4].isdigit():
-        board[4] = ai_symbol
-        return
+result_label = tk.Label(window, text="", font=("Arial", 12), bg="#f0f0f0")
+result_label.pack(pady=20)
 
-    corners = [i for i in [0, 2, 6, 8] if board[i].isdigit()]
-    if corners:
-        board[random.choice(corners)] = ai_symbol
-        return
+score_label = tk.Label(window, text="Score\nYou: 0  Computer: 0", font=("Arial", 12, "bold"), bg="#f0f0f0")
+score_label.pack(pady=10)
 
-    possible_moves = [i for i in range(9) if board[i].isdigit()]
-    board[random.choice(possible_moves)] = ai_symbol
+def reset():
+    global player_score, computer_score
+    player_score = 0
+    computer_score = 0
+    score_label.config(text="Score\nYou: 0  Computer: 0")
+    result_label.config(text="")
 
+tk.Button(window, text="Reset Game", command=reset, bg="red", fg="white").pack(pady=10)
 
-def check_win(board, symbol):
-    win_conditions = [
-        (0,1,2),(3,4,5),(6,7,8),
-        (0,3,6),(1,4,7),(2,5,8),
-        (0,4,8),(2,4,6)
-    ]
-
-    for a, b, c in win_conditions:
-        if board[a] == board[b] == board[c] == symbol:
-            return True
-    return False
-
-
-def check_full(board):
-    return all(not spot.isdigit() for spot in board)
-
-
-def tic_tac_toe():
-    print(Fore.CYAN + "Welcome to Tic-Tac-Toe!" + Style.RESET_ALL)
-    player_name = input(Fore.GREEN + "Enter your name: " + Style.RESET_ALL)
-
-    while True:
-        board = [str(i) for i in range(1, 10)]
-        player_symbol, ai_symbol = player_choice()
-
-        turn = random.choice(['Player', 'AI'])
-        print(Fore.YELLOW + f"{turn} will go first!" + Style.RESET_ALL)
-
-        game_on = True
-
-        while game_on:
-            display_board(board)
-
-            if turn == 'Player':
-                player_move(board, player_symbol)
-
-                if check_win(board, player_symbol):
-                    display_board(board)
-                    print(Fore.GREEN + f"🎉 Congratulations {player_name}, you win!" + Style.RESET_ALL)
-                    game_on = False
-
-                elif check_full(board):
-                    display_board(board)
-                    print(Fore.YELLOW + "It's a tie!" + Style.RESET_ALL)
-                    game_on = False
-                else:
-                    turn = 'AI'
-
-            else:
-                print(Fore.BLUE + "AI is making a move..." + Style.RESET_ALL)
-                ai_move(board, ai_symbol, player_symbol)
-
-                if check_win(board, ai_symbol):
-                    display_board(board)
-                    print(Fore.RED + "😈 AI wins! Better luck next time." + Style.RESET_ALL)
-                    game_on = False
-
-                elif check_full(board):
-                    display_board(board)
-                    print(Fore.YELLOW + "It's a tie!" + Style.RESET_ALL)
-                    game_on = False
-                else:
-                    turn = 'Player'
-
-        play_again = input(Fore.GREEN + "Play again? (y/n): " + Style.RESET_ALL).strip().lower()
-        if play_again not in ['y', 'yes']:
-            print(Fore.CYAN + "Thanks for playing! Goodbye!" + Style.RESET_ALL)
-            break
-
-
-if __name__ == "__main__":
-    tic_tac_toe()
+window.mainloop()
