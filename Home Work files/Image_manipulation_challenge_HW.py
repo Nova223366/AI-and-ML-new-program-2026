@@ -20,12 +20,12 @@ def main():
         if mode == 'n':
             processed_frame = frame
             cv2.putText(processed_frame, "Normal View", (20, 40), 
-                        cv2.FONT_HERSHEY_SHORT_DATA_GENESIS, 0.7, (0, 255, 0), 1)
+                        cv2.FONT_HERSHEY_DUPLEX, 0.7, (0, 255, 0), 1)
 
         elif mode == 'r':
             processed_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
             cv2.putText(processed_frame, "Rotated 90", (20, 40), 
-                        cv2.FONT_HERSHEY_SHORT_DATA_GENESIS, 0.7, (0, 255, 0), 1)
+                        cv2.FONT_HERSHEY_DUPLEX, 0.7, (0, 255, 0), 1)
 
         elif mode == 'c':
             start_x, start_y = int(w * 0.25), int(h * 0.25)
@@ -33,7 +33,7 @@ def main():
             cropped = frame[start_y:end_y, start_x:end_x]
             processed_frame = cv2.resize(cropped, (w, h))
             cv2.putText(processed_frame, "Cropped & Zoomed", (20, 40), 
-                        cv2.FONT_HERSHEY_SHORT_DATA_GENESIS, 0.7, (0, 255, 0), 1)
+                        cv2.FONT_HERSHEY_DUPLEX, 0.7, (0, 255, 0), 1)
 
         elif mode == 'b':
             hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -47,7 +47,7 @@ def main():
             hsv[:, :, 2] = v_channel
             processed_frame = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
             cv2.putText(processed_frame, f"Brightness: {brightness_level}", (20, 40), 
-                        cv2.FONT_HERSHEY_SHORT_DATA_GENESIS, 0.7, (0, 255, 0), 1)
+                        cv2.FONT_HERSHEY_DUPLEX, 0.7, (0, 255, 0), 1)
 
         cv2.imshow("Manipulation Window", processed_frame)
 
