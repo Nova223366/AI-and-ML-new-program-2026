@@ -2,7 +2,7 @@ import cv2, time, pyautogui
 import mediapipe as mp  
 
 mp_hands = mp.solutions.hands
-hands = mp_hands.Hands(max_num_hands = 1, min_detection_confidence = 0.5)
+hands = mp_hands.Hands(max_num_hands = 1, min_detection_confidence = 0.8)
 mp_drawing = mp.solutions.drawing_utils
 
 SCROLL_SPEED = 300
@@ -48,10 +48,13 @@ while cap.isOpened():
                 pyautogui.scroll(SCROLL_SPEED if gesture == "scroll_up" else -SCROLL_SPEED)
                 last__scroll = current_time
 
+    gesture = detect_gesture(hand_landmarks, hand_handedness.classification[0].label) if results.multi_hand_landmarks else "none"
+
     c_time = time.time()
     fps = 1 / (c_time - p_time) if c_time != p_time else 0
     p_time = c_time
     cv2.putText(img, f'FPS: {int(fps)}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+    cv2.putText(img, f'Gesture: {gesture}', (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
     cv2.imshow("Gesture Scroll Control", img)
 
     if cv2.waitKey(5) & 0xFF == ord('q'):
