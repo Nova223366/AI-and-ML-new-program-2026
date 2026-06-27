@@ -1,5 +1,7 @@
 import requests
-
+import colorama
+from colorama import Fore, Style
+colorama.init()
 def get_random_joke():
     url = "https://official-joke-api.appspot.com/random_joke"
     response = requests.get(url)
@@ -48,26 +50,26 @@ def get_random_weather():
 def main():
     print("Welcome to the Random API Data Generator!")
 
-    while True:
-        print("1.'Get random joke'\n2.'Get random travel question'\n3.'Get random cat fact'\n4.'Get random weather info'")
-        user_input = input("Press 1, 2, 3, or 4, or type 'q'/quit to exit: ").strip().lower()
-        if user_input == 'q' or user_input == 'quit':
-            print("Thanks for using the Random API Data Generator!")
-            break
-        elif user_input == '1':
-            joke = get_random_joke()
-            print(joke)
-        elif user_input == '2':
-            travel_question = get_random_travel()
-            print(travel_question)
-        elif user_input == '3':
-            cat_fact = get_random_cat_facts()
-            print(cat_fact)
-        elif user_input == '4':
-            weather_info = get_random_weather()
-            print(weather_info)
-        else:
-            print("Invalid input. Please try again.")
+while True:
+    print("1.'Get random joke'\n2.'Get random travel question'\n3.'Get random cat fact'\n4.'Get random weatherinfo'")
+    user_input = input("Press 1, 2, 3, or 4, or type 'q'/quit to exit: ").strip().lower()
+    if user_input == 'q' or user_input == 'quit':
+        print("Thanks for using the Random API Data Generator!")
+        break
+    elif user_input == '1':
+        joke = get_random_joke()
+        print(Fore.GREEN + "\t\n" + joke + "\n" + Style.RESET_ALL)
+    elif user_input == '2':
+        travel_question = get_random_travel()
+        print(Fore.BLUE + "\t\n" + travel_question + "\n" + Style.RESET_ALL)
+    elif user_input == '3':
+        cat_fact = get_random_cat_facts()
+        print(Fore.MAGENTA + "\t\n" + cat_fact + "\n" + Style.RESET_ALL)
+    elif user_input == '4':
+        weather_info = get_random_weather()
+        print(Fore.YELLOW + "\t\n" + weather_info + "\n" + Style.RESET_ALL)
+    else:
+        print("Invalid input. Please try again.")
 
 if __name__ == "__main__":
     main()
