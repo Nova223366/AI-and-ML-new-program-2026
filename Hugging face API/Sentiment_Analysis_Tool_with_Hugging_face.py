@@ -32,4 +32,4 @@ def smart_score(base, q1,q2,strong):
     opp_pen = 0.12 if any ((has_any(q1, negA) and has_any(q2, oppA.values())) or (has_any(q2, negA) and has_any(q1, oppA.values())) else 0
     return max(0.0, min(1.0, base + boost - num_pen - opp_pen))
 
-def label(s): return ""
+def label(s): return "":
