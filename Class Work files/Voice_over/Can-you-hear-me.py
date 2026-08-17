@@ -22,7 +22,7 @@ def spinner():
         sys.stdout.flush()
         idx += 1
         time.sleep(0.1)
-    sys.stdout.write('\rRecording stopped.          \n')
+    sys.stdout.write('\rRecording stopped.\n')
 
 def record_until_enter():
     p = pyaudio.PyAudio()
