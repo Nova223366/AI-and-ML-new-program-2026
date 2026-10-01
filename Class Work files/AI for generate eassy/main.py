@@ -1,44 +1,80 @@
-from groq import generate_respones as a
+# Choose ONE provider by importing it:
+
+#Change groq --> hf to use hugging face API
+#Change hf --> groq to use groq API
+from groq import generate_response as a
+# from hf import generate_response
 
 def get_essay_details():
     print("\n=== AI Writing Assistant ===\n")
     topic = input("What is the topic of your essay? ").strip()
     essay_type = input("What type of essay are you writing? ").strip()
     lengths = ["300 words", "900 words", "1200 words", "2000 words"]
-    print("Select essay word count: ")
-    for i, l in enumerate(lengths, 1):
-        print(f"{i}. {l}")
+    print("Select essay word count:")
+    for i, l in enumerate(lengths, 1): print(f"{i}) {l}")
     try:
         idx = int(input("> ").strip())
         length = lengths[idx - 1] if 1 <= idx <= len(lengths) else "300 words"
     except ValueError:
         length = "300 words"
-    target_audience = input("Who is the target audience for your essay? ").strip()
-    return {"topics": topic, "essay_type": essay_type, "length": length, "target_audience": target_audience}
+    target_audience = input("Target audience (e.g., High school students): ").strip()
+    return {"topic": topic, "essay_type": essay_type, "length": length, "target_audience": target_audience}
 
 def generate_essay_content(details):
     try:
-        temp = float(input("Enter temperature (0.0-1.0, default 0.7): ").strip())
+        temp = float(input("Enter temperature (0.1 structured, 0.7 creative): ").strip())
+        if not (0.0 <= temp <= 1.0): raise ValueError
     except ValueError:
-        print("Invalid input. Using default temperature of 0.7.")
-        temp = 0.7
-    intro_p = f"Write an introduction for an essay on the topic '{details['topics']}' of type '{details['essay_type']}' with a length of '{details['length']}' for the target audience '{details['target_audience']}'."
-    intro = a(intro_p, temperature=temp)
+        print("Invalid temperature. Using 0.3.")
+        temp = 0.3
+
+    intro_p = f"Write an introduction for an {details['essay_type']} essay about {details['topic']} on the topic of {details['length']}."
+    intro = a(intro_p, temperature=temp, max_tokens=1024)
+    print("\n=== Generated Introduction ===\n")
     print(intro)
 
-    print("\nWould you like the body written as full draft or step by step?")
-    print("1. Full draft\n2. Step by step")
+    print("\nWould you like the body written as a full draft or step-by-step?")
+    print("1) Full draft\n2) Step-by-step")
     choice = input("> ").strip()
-    if choice == "1" or choice == "Full draft":
-        body_p = f"Write the body of the essay on the topic '{details['topics']}' of type '{details['essay_type']}' with a length of '{details['length']}' for the target audience '{details['target_audience']}'."
-        body = a(body_p, temperature=temp)
+
+    if choice == "1":
+        body_p = f"Write a full body for an essay on {details['topic']} with the stance of {details['target_audience']}."
+        body = a(body_p, temperature=temp, max_tokens=1024)
+        print("\n=== Generated Full Body ===\n")
         print(body)
-    elif choice == "2" or choice == "Step by step":
-        print("\nGenerating body step by step...")
-        for i in range(1, 4):
-            step_p = f"Write part {i} of the body of the essay on the topic '{details['topics']}' of type '{details['essay_type']}' with a length of '{details['length']}' for the target audience '{details['target_audience']}'."
-            step = a(step_p, temperature=temp)
-            print(f"\n--- Part {i} ---\n{step}")
-    conclusion_p = f"Write a conclusion for the essay on the topic '{details['topics']}' of type '{details['essay_type']}' with a length of '{details['length']}' for the target audience '{details['target_audience']}'."
-    
-        
+    else:
+        step_p = f"Write step-by-step arguments for an essay on {details['topic']}. Provide evidence and reasoning."
+        body_step = a(step_p, temperature=temp, max_tokens=1024)
+        print("\n=== Generated Step-by-Step Body ===\n")
+        print(body_step)
+
+    concl_p = f"Write a conclusion for an {details['essay_type']} essay about {details['topic']} with the stance of {details['target_audience']}."
+    concl = a(concl_p, temperature=temp, max_tokens=1024)
+    print("\n=== Generated Conclusion ===\n")
+    print(concl)
+
+def feedback_and_refinement():
+    try:
+        rating = int(input("\nRate satisfaction (1-5): ").strip())
+        if rating < 1 or rating > 5: raise ValueError
+    except ValueError:
+        print("Invalid rating. Using 3.")
+        rating = 3
+
+    if rating != 5:
+        feedback = input("Provide feedback (tone, structure, etc.): ").strip()
+        print(f"\nThank you for your feedback: {feedback}")
+    else:
+        print("\nThank you! The essay looks good.")
+
+def run_activity():
+    print("\nWelcome to the AI Writing Assistant!")
+    details = get_essay_details()
+    if not details["topic"] or not details["essay_type"]:
+        print("Please provide at least a topic and essay type to continue.")
+        return
+    generate_essay_content(details)
+    feedback_and_refinement()
+
+if __name__ == "__main__":
+    run_activity()
