@@ -1,14 +1,54 @@
-from groq_02 import generate_response as k
+from groq_02 import generate_response, list_models
 
-def casual_talk():
-    print("\n=== Casual Talk with AI ===\n")
+def main():
+
+    print("===================================")
+    print("       GROQ AI DEBUG PROGRAM")
+    print("===================================")
+
+    # Show available models
+    print("\nChecking Groq models...")
+    list_models()
+
+    print("Type 'exit' to quit.")
+    print()
+
     while True:
-        user_input = input("You: ").strip()
-        if user_input.lower() in ["exit", "quit"]:
-            for i in range(3, 0, -1):
-                print(f"Exiting in {i}...")
-            print("Exited from casual talk.")
-            break
-        response = k(user_input, temperature=0.5, max_tokens=150)
 
-casual_talk()
+        try:
+
+            prompt = input("You: ")
+
+            if prompt.lower().strip() == "exit":
+                print("Goodbye!")
+                break
+
+            if not prompt.strip():
+                print("Please enter a message.")
+                continue
+
+            print("\n[DEBUG] Sending request...\n")
+
+            response = generate_response(prompt)
+
+            print("\nAI:", response)
+            print()
+
+        except KeyboardInterrupt:
+
+            print("\nProgram stopped.")
+            break
+
+        except Exception as e:
+
+            print("\n========== UNEXPECTED ERROR ==========")
+            print(
+                f"Type: {type(e).__name__}"
+            )
+            print(
+                f"Message: {e}"
+            )
+            print("======================================\n")
+
+if __name__ == "__main__":
+    main()
