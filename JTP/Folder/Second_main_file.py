@@ -1,4 +1,10 @@
 from groq_02 import generate_response as k 
+import pyttsx3
+engine = pyttsx3.init()
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[0].id)
+engine.setProperty('rate', 150)
+engine.setProperty('volume', 1.0)
 
 def main():
     print("If you want to do task type 'task'")
@@ -11,6 +17,8 @@ def main():
             utility()
         else:
             response = k(user_input)
+            engine.say(response)
+            engine.runAndWait()
             print(f"\nAI: {response}\n")
 
 
@@ -62,6 +70,5 @@ def utility():
 
     else:
         print("I don't know that utility command.")
-
 
 main()
