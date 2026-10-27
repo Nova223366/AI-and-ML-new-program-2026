@@ -3,7 +3,7 @@ from io import BytesIO
 import os
 import requests
 import streamlit as st
-from groq import Groq
+from groq_AI_image import Groq
 
 # ---------------- CONFIGURATION ----------------
 
